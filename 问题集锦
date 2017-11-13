@@ -1,0 +1,2 @@
+1.spring.application.name 无效  默认使用module名称
+2.eureka.instance.hostname 无效 默认使用localhost
