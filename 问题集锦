@@ -1,2 +1,10 @@
-1.spring.application.name 无效  默认使用module名称
-2.eureka.instance.hostname 无效 默认使用localhost
+1.spring.application.name 无效
+2.eureka.instance.hostname 无效 默认使用localhost   有效 需要 配置ip和主机的映射  在host文件
+
+这里需要注意的是，spring cloud的版本号是以英国伦敦地铁站的名字命名的，按首字母A-Z的顺序排，不同的spring cloud版本相对应的spring boot的版本是有限制的，否则无法使用。
+具体的对应需要参考官网说明
+
+服务架构的九大特征之一就是高可用性
+
+
+

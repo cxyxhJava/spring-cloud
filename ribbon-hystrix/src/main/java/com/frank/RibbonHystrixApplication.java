@@ -2,14 +2,16 @@ package com.frank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
-
+@EnableCircuitBreaker//开启断路器
 @EnableDiscoveryClient
+//@SpringCloudApplication
 @SpringBootApplication
-public class Eurekaclient02Application {
+public class RibbonHystrixApplication {
 
 
 	@Bean
@@ -19,6 +21,6 @@ public class Eurekaclient02Application {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(Eurekaclient02Application.class, args);
+		SpringApplication.run(RibbonHystrixApplication.class, args);
 	}
 }
