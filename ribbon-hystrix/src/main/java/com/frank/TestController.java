@@ -24,9 +24,10 @@ public class TestController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     @HystrixCommand(fallbackMethod = "helloError")
     public String add() {
-        return restTemplate.getForEntity("http://eurekaclient/add?a=10&b=20", String.class).getBody();
+        return restTemplate.getForEntity("http://eurekaclient9002/add?a=10&b=20", String.class).getBody();
     }
     @RequestMapping(value = "/hi", method = RequestMethod.GET)
+    @HystrixCommand(fallbackMethod = "helloError")
     public String Hi() {
         return restTemplate.getForEntity("http://eurekaclient/hi?name="+name, String.class).getBody();
     }

@@ -1,29 +1,55 @@
+本文代码见github地址:https://github.com/franyang/spring-cloud
+
 Spring Cloud简介
 Spring Cloud是一个基于Spring Boot实现的云应用开发工具，它为基于JVM的云应用开发中的配置管理、服务发现、断路器、智能路由、微代理、控制总线、全局锁、决策竞选、分布式会话和集群状态管理等操作提供了一种简单的开发方式。
 Spring Cloud包含了多个子项目（针对分布式系统中涉及的多个不同开源产品），比如：Spring Cloud Config、Spring Cloud Netflix、Spring Cloud CloudFoundry、Spring Cloud AWS、Spring Cloud Security、Spring Cloud Commons、Spring Cloud Zookeeper、Spring Cloud CLI等项目。
 
+SpringCloud特点
+1：约定优于配置
+2：开箱即用、快速启动
+3：适用于各种环境
+4：轻量级的组件
+5：组件支持丰富，功能齐全
 
+Spring Cloud Config：配置管理开发工具包，可以让你把配置放到远程服务器，目前支持本地存储、Git以及Subversion。 功能类似disconf 实现方式不同
+https://yq.aliyun.com/articles/250660?spm=5176.8067842.tagmain.79.mKVTSQ
 
-@Singleton 实现单例的注解
+Spring Cloud Bus：事件、消息总线，用于在集群（例如，配置变化事件）中传播状态变化，可与Spring Cloud Config联合实现热部署
+目前仅支持rabbitmq 及 kafka
+上面链接有通过kafka实现的代码
 
+Spring Cloud Netflix：针对多种Netflix组件提供的开发工具包，其中包括Eureka、Hystrix、Zuul、Archaius等。
 
+Eureka：云端负载均衡，一个基于 REST 的服务，用于定位服务。
 
+Hystrix：容错管理工具，旨在通过控制服务和第三方库的节点,从而对延迟和故障提供更强大的容错能力。
+http://blog.didispace.com/springcloud3/ 断路器在ribbon和feign中的使用
 
-DiscoveryClient 获取注册地址url
+Ribbon:Netflix发布的开源项目，主要功能是提供客户端的软件负载均衡算法，将Netflix的中间层服务连接在一起。
+http://www.cnblogs.com/xiaojunbo/p/7094305.html
 
-1.从config获取region
- String region = getRegion(clientConfig);
-2.从regin 获取zone    1对多
-  String[] availZones = clientConfig.getAvailabilityZones(clientConfig.getRegion());
+Feign:spring cloud中服务消费端的调用框架,通常与ribbon,hystrix等组合使用。 单独使用可以简化http调用代码的编写,避免使用厚重的httpclient或者okhttp
+Feign内部集成了Hystrix,可以直接使用
+http://www.jianshu.com/p/3d597e9d2d67 单独使用
+http://www.cnblogs.com/xiaojunbo/p/7094377.html 组合使用 负载均衡
 
+Netflix Zuul：边缘服务工具，是提供动态路由，监控，弹性，安全等的边缘服务。
+https://yq.aliyun.com/articles/250659?spm=5176.100239.blogcont250660.19.355WSa
 
-EurekaClientConfigBean 获取config数据
+Netflix Archaius：配置管理API，包含一系列配置管理API，提供动态类型化属性、线程安全配置操作、轮询框架、回调机制等功能。
 
+Spring Cloud for Cloud Foundry：通过Oauth2协议绑定服务到CloudFoundry，CloudFoundry是VMware推出的开源PaaS云平台。
 
-hystrix的默认超时时间是2000毫秒，也就是2秒就够了
+Spring Cloud Sleuth：日志收集工具包，封装了Dapper,Zipkin和HTrace操作。
 
+Spring Cloud Data Flow：大数据操作工具，通过命令行方式操作数据流。
 
+Spring Cloud Security：安全工具包，为你的应用程序添加安全控制，主要是指OAuth2。
 
+Spring Cloud Consul：封装了Consul操作，consul是一个服务发现与配置工具，与Docker容器可以无缝集成。
 
+Spring Cloud Zookeeper：操作Zookeeper的工具包，用于使用zookeeper方式的服务注册和发现。
 
+Spring Cloud Stream：数据流操作开发包，封装了与Redis,Rabbit、Kafka等发送接收消息。
 
+Spring Cloud CLI：基于 Spring Boot CLI，可以让你以命令行方式快速建立云组件。

@@ -1,0 +1,103 @@
+Eureka源码分析
+参考文章http://www.jianshu.com/p/ef2591899597
+
+//@EnableDiscoveryClient
+@EnableEurekaClient
+开启DiscoveryClient  开启注入  EurekaClient注解包括DiscoveryClient.
+
+DiscoveryClient类
+查看类注释
+这个类用于帮助与Eureka Server互相协作。
+
+Eureka Client负责了下面的任务：
+- 向Eureka Server注册服务实例
+- 向Eureka Server为租约续期
+- 当服务关闭期间，向Eureka Server取消租约
+- 查询Eureka Server中的服务实例列表
+Eureka Client还需要配置一个Eureka Server的URL列表。
+
+
+配置读取
+
+查看获取serviceUrl的方法 getServiceUrlsFromConfig  此方法以及废弃,使用新类EndpointUtils
+
+查看EndpointUtils的getServiceUrlsFromConfig方法发现最终调用为EurekaClientConfigBean类 的getEurekaServerServiceUrls
+
+url获取的顺序
+1.从config获取region
+ String region = getRegion(clientConfig);
+2.获取对应的zoon (可用看出zoon可用配置多个)
+int myZoneOffset = getZoneOffset(instanceZone, preferSameZone, availZones);
+   for (int i = 0; i < availZones.length; i++) {
+            if (myZone != null && (availZones[i].equalsIgnoreCase(myZone.trim()) == preferSameZone)) {
+                return i;
+            }
+        }
+根据代码的循环方式可用看出:优先访问同自己一个Zone中的实例，其次才访问其他Zone中的实例
+3.从regin 获取zone
+  String[] availZones = clientConfig.getAvailabilityZones(clientConfig.getRegion());
+4.根据instanceZone查找对应的Key,然后去config中查找对应的value 获取urls
+
+
+所有的配置数据存储在EurekaClientConfigBean类.
+配置中的eureka.client.serviceUrl.defaultZone=http://localhost:1001/eureka/,http://localhost:1002/eureka/  存储为 HashMap
+
+部分配置介绍如下
+#端口  默认8080
+server.port=1002
+#设置是否向注册中心注册，默认是true
+eureka.client.register-with-eureka=true
+#是否需要去检索寻找服务，默认是true
+eureka.client.fetch-registry=false
+#设置服务器实例名,需要做ip和域名的对应 不然无法生效  //查询时会有DNS和IP查询两张方式 故而对应域名需要绑定ip
+eureka.instance.hostname=frank
+
+#设置客户端名称
+spring.application.name=server2
+
+#配置对应的注册中心url
+eureka.client.serviceUrl.defaultZone=http://localhost:1001/eureka/,http://localhost:1002/eureka/
+#eureka.client.serviceUrl.testZone=http://localhost:1001/eureka/,http://localhost:1002/eureka/
+
+
+#设置是否开启自我保护机制，默认是true
+#eureka.server.enable-self-preservation=false
+
+重新注册时间
+#eureka.instance.lease-renewal-interval-in-seconds=30
+过期时间  用于续约
+#eureka.instance.lease-expiration-duration-in-seconds=90
+
+
+
+服务注册
+
+@Inject注解找到对应的初始化方法
+
+#设置是否向注册中心注册，默认是true
+eureka.client.register-with-eureka=true 这个注解帮助我们找到clientConfig.shouldRegisterWithEureka() 这个判断 正是在初始化方法的  initScheduledTasks()方法中
+
+判断内有InstanceInfoReplicator实例生成并最终start运行
+
+查看实例的run方法
+
+discoveryClient.register(); 注册此类
+
+httpResponse = eurekaTransport.registrationClient.register(instanceInfo);
+注册方式:REST请求 源数据文件instanceInfo获取applicationInfoManager.getInfo();
+
+
+服务获取与服务续约
+
+initScheduledTasks() 中的另外两个任务
+
+int renewalIntervalInSecs = instanceInfo.getLeaseInfo().getRenewalIntervalInSecs();
+int expBackOffBound = clientConfig.getHeartbeatExecutorExponentialBackOffBound();
+可以在配置中自定义时间
+
+
+
+
+
+
+
